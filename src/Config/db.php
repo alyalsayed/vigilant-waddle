@@ -4,6 +4,6 @@ return [
     'port' => $_ENV['DB_PORT'] ?? '3306', 
     'username' => $_ENV['DB_USERNAME'] ?? 'root',
     'password' => $_ENV['DB_PASSWORD'] ?? '',
-    'dbname' => $_ENV['DB_NAME'],
+    'dbname' => $_ENV['DB_NAME'] ?? 'scandiweb',
     'driver' => $_ENV['DB_CONNECTION'] ?? 'mysql'
 ];
