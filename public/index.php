@@ -2,8 +2,12 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
-    $r->post('/graphql', [App\Controller\GraphQL::class, 'handle']);
+use FastRoute\Dispatcher;
+use FastRoute\RouteCollector;
+use App\Controller\GraphQL;
+
+$dispatcher = FastRoute\simpleDispatcher(function (RouteCollector $r) {
+    $r->post('/graphql', [GraphQL::class, 'handle']);
 });
 
 $routeInfo = $dispatcher->dispatch(
@@ -12,16 +16,22 @@ $routeInfo = $dispatcher->dispatch(
 );
 
 switch ($routeInfo[0]) {
-    case FastRoute\Dispatcher::NOT_FOUND:
-        // ... 404 Not Found
+    case Dispatcher::NOT_FOUND:
+        // 404 Not Found
+        header('HTTP/1.1 404 Not Found');
+        echo '404 Not Found';
         break;
-    case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
-        $allowedMethods = $routeInfo[1];
-        // ... 405 Method Not Allowed
+    case Dispatcher::METHOD_NOT_ALLOWED:
+        // 405 Method Not Allowed
+        header('HTTP/1.1 405 Method Not Allowed');
+        echo '405 Method Not Allowed';
         break;
-    case FastRoute\Dispatcher::FOUND:
+    case Dispatcher::FOUND:
         $handler = $routeInfo[1];
         $vars = $routeInfo[2];
-        echo $handler($vars);
+        
+        // Instantiate the GraphQL class and call the handle method
+        $graphQL = new GraphQL();
+        $graphQL->handle();
         break;
 }
